@@ -5,7 +5,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -50,13 +55,15 @@ fun DetailScreenStateless(
 }
 
 @Composable
-fun DetailScreenContent(
+private fun DetailScreenContent(
     modifier: Modifier = Modifier,
     cat: CatUi
 ) {
     Column(modifier.fillMaxSize()) {
         SubcomposeAsyncImage(
-            modifier = Modifier.fillMaxWidth().height(400.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(400.dp),
             model = cat.imageUrl,
             contentDescription = "Probably a picture of a cat",
             contentScale = ContentScale.Fit,
@@ -66,5 +73,21 @@ fun DetailScreenContent(
                 }
             }
         )
+        DetailScreenTagList(tags = cat.tags)
+    }
+}
+
+@Composable
+fun DetailScreenTagList(
+    modifier: Modifier = Modifier,
+    tags: List<String>
+) {
+    Column(modifier.padding(8.dp)) {
+        Text(text = "Tags", style = MaterialTheme.typography.titleLarge)
+        LazyColumn() {
+            items(tags, key = { it }) { tag ->
+                Text(text = if (tag.startsWith('#')) tag else "#$tag")
+            }
+        }
     }
 }

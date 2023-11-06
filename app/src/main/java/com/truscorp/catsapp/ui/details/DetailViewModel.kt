@@ -4,9 +4,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.truscorp.catsapp.data.api.CatsApi
-import com.truscorp.catsapp.ui.common.CatUi
+import com.truscorp.catsapp.ui.common.toCatUi
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -26,7 +25,6 @@ class DetailViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             _uiState.value = DetailUiState.Loading
-            delay(2000)
             try {
                 val result = catsApi.getCatById(id)
                 if (!result.isSuccessful) {
@@ -40,7 +38,7 @@ class DetailViewModel @Inject constructor(
                 }
 
                 _uiState.value = DetailUiState.Success(
-                    cat = CatUi(id = body.id, imageUrl = "https://cataas.com/cat/${body.id}", tags = body.tags, isFavourite = false)
+                    cat = body.toCatUi()
                 )
             } catch (ex: Exception) {
                 _uiState.value = DetailUiState.Error("Error: ${ex.message}")

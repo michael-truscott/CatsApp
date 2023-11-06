@@ -2,10 +2,9 @@ package com.truscorp.catsapp.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.truscorp.catsapp.ui.common.CatUi
 import com.truscorp.catsapp.data.api.CatsApi
+import com.truscorp.catsapp.ui.common.toCatUi
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -34,7 +33,6 @@ class HomeViewModel @Inject constructor(
     private fun refresh() {
         viewModelScope.launch {
             _uiState.value = HomeUiState.Loading
-            delay(2000)
             try {
                 val result = catsApi.getAllCats()
                 if (!result.isSuccessful) {
@@ -48,9 +46,7 @@ class HomeViewModel @Inject constructor(
                 }
 
                 _uiState.value = HomeUiState.Success(
-                    catList = body.map {
-                        CatUi(id = it.id, tags = it.tags, imageUrl = "https://cataas.com/cat/${it.id}")
-                    }
+                    catList = body.map { it.toCatUi() }
                 )
             } catch (ex: Exception) {
                 _uiState.value = HomeUiState.Error("Error: ${ex.message}")
