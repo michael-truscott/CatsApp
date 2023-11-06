@@ -1,5 +1,6 @@
 package com.truscorp.catsapp.ui.details
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,6 +17,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
@@ -60,19 +62,21 @@ private fun DetailScreenContent(
     cat: CatUi
 ) {
     Column(modifier.fillMaxSize()) {
-        SubcomposeAsyncImage(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(400.dp),
-            model = cat.imageUrl,
-            contentDescription = "Probably a picture of a cat",
-            contentScale = ContentScale.Fit,
-            loading = {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    CircularProgressIndicator(Modifier.align(Alignment.Center))
+        Box(modifier = Modifier.background(Color.Black)) {
+            SubcomposeAsyncImage(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(400.dp),
+                model = cat.imageUrl,
+                contentDescription = "Probably a picture of a cat",
+                contentScale = ContentScale.Fit,
+                loading = {
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        CircularProgressIndicator(Modifier.align(Alignment.Center))
+                    }
                 }
-            }
-        )
+            )
+        }
         DetailScreenTagList(tags = cat.tags)
     }
 }
