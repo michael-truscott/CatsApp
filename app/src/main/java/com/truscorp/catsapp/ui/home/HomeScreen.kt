@@ -48,9 +48,15 @@ fun HomeScreen(
     navController: NavController
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    HomeScreenStateless(modifier, uiState = uiState, onAction = { action ->
-        viewModel.performAction(action)
-    })
+    HomeScreenStateless(modifier,
+        uiState = uiState,
+        onAction = { action ->
+            viewModel.performAction(action)
+        },
+        onNavigate = { route ->
+            navController.navigate(route)
+        }
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -58,7 +64,8 @@ fun HomeScreen(
 fun HomeScreenStateless(
     modifier: Modifier = Modifier,
     uiState: HomeUiState,
-    onAction: (HomeUiAction) -> Unit
+    onAction: (HomeUiAction) -> Unit,
+    onNavigate: (String) -> Unit
 ) {
     Column(modifier = modifier.fillMaxSize()) {
         TopAppBar(title = { Text(text = "Home") }, actions = {
@@ -81,7 +88,10 @@ fun HomeScreenStateless(
             is HomeUiState.Success -> {
                 CatList(
                     Modifier.fillMaxSize(),
-                    cats = uiState.catList
+                    cats = uiState.catList,
+                    onCatClicked = { cat ->
+                        onNavigate("home_details/${cat.id}")
+                    }
                 )
             }
         }
@@ -91,7 +101,8 @@ fun HomeScreenStateless(
 @Composable
 private fun CatList(
     modifier: Modifier = Modifier,
-    cats: List<CatUi>
+    cats: List<CatUi>,
+    onCatClicked: (CatUi) -> Unit
 ) {
     LazyColumn(
         modifier = modifier
@@ -100,17 +111,19 @@ private fun CatList(
         contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp)
     ) {
         items(cats, key = { it.id }) { cat ->
-            CatListItem(cat = cat)
+            CatListItem(cat = cat, onClick = { onCatClicked(cat) })
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CatListItem(
     modifier: Modifier = Modifier,
-    cat: CatUi
+    cat: CatUi,
+    onClick: () -> Unit
 ) {
-    Card(modifier.fillMaxWidth()) {
+    Card(modifier = modifier.fillMaxWidth(), onClick = onClick) {
         Box(
             modifier = Modifier
                 .background(Color.Gray)
@@ -189,6 +202,7 @@ fun CatListItemPreview() {
                 "more",
                 "tags"
             ),
-        )
+        ),
+        onClick = {}
     )
 }
