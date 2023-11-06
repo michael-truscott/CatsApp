@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -25,6 +26,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.truscorp.catsapp.home.HomeScreen
+import com.truscorp.catsapp.home.HomeViewModel
 import com.truscorp.catsapp.ui.theme.CatsAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -42,6 +45,7 @@ class MainActivity : ComponentActivity() {
 
 sealed class Screen(val route: String) {
     object Home : Screen("home")
+    object Tags : Screen("tags")
     object Favourites : Screen("favourites")
 }
 
@@ -53,6 +57,7 @@ data class BottomTabItem(
 
 val bottomTabItems = listOf(
     BottomTabItem(Screen.Home, "Home", R.drawable.icon_home),
+    BottomTabItem(Screen.Tags, "Tags", R.drawable.icon_tag),
     BottomTabItem(Screen.Favourites, "Favourites", R.drawable.icon_favorite),
 )
 
@@ -105,7 +110,11 @@ fun AppNavHost(
         modifier = modifier
     ) {
         composable(Screen.Home.route) {
-            Text(text = "Home")
+            val viewModel: HomeViewModel = hiltViewModel()
+            HomeScreen(viewModel = viewModel, navController = navController)
+        }
+        composable(Screen.Tags.route) {
+            Text(text = "Tags")
         }
         composable(Screen.Favourites.route) {
             Text(text = "Favourites")
