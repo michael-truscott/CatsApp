@@ -7,9 +7,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -32,9 +32,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import coil.compose.SubcomposeAsyncImage
 import com.truscorp.catsapp.ui.common.CatUi
 
 @Composable
@@ -116,10 +118,22 @@ fun CatListItem(
     Card(modifier.fillMaxWidth()) {
         Box(
             modifier = Modifier
-                .background(Color.Red)
+                .background(Color.Gray)
                 .fillMaxWidth()
-                .height(100.dp)
-        )
+                .aspectRatio(1f)
+        ) {
+            SubcomposeAsyncImage(
+                modifier = Modifier.fillMaxSize(),
+                model = cat.imageUrl,
+                contentDescription = "Probably a picture of a cat",
+                contentScale = ContentScale.Crop,
+                loading = {
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        CircularProgressIndicator(Modifier.align(Alignment.Center))
+                    }
+                }
+            )
+        }
         if (cat.tags.isNotEmpty()) {
             TagList(tags = cat.tags)
         }
@@ -168,8 +182,8 @@ fun TagListItem(
 fun CatListItemPreview() {
     CatListItem(
         cat = CatUi(
-            "1",
-            listOf(
+            id = "1",
+            tags = listOf(
                 "asdf",
                 "lorem",
                 "ipsum",
@@ -179,7 +193,7 @@ fun CatListItemPreview() {
                 "long tag to extend",
                 "more",
                 "tags"
-            )
+            ),
         )
     )
 }

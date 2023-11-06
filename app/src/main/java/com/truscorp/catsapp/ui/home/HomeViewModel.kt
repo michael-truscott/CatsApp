@@ -48,7 +48,7 @@ class HomeViewModel @Inject constructor(
 
                 _uiState.value = HomeUiState.Success(
                     catList = body.map {
-                        CatUi(id = it.id, tags = it.tags)
+                        CatUi(id = it.id, tags = it.tags, imageUrl = "https://cataas.com/cat/${it.id}")
                     }
                 )
             } catch (ex: Exception) {
