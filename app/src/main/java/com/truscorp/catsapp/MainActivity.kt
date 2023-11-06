@@ -26,8 +26,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.truscorp.catsapp.home.HomeScreen
-import com.truscorp.catsapp.home.HomeViewModel
+import com.truscorp.catsapp.ui.home.HomeScreen
+import com.truscorp.catsapp.ui.home.HomeViewModel
 import com.truscorp.catsapp.ui.theme.CatsAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
