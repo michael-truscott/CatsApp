@@ -21,19 +21,26 @@ class HomeViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            val result = catsApi.cats()
-        }
-
-        viewModelScope.launch {
             delay(2000)
-            // TODO: Get actual API result
-            _uiState.value = HomeUiState.Success(
-                catList = listOf(
-                    CatUi("1", listOf("cute", "funny", "orange")),
-                    CatUi("2", listOf("chonky")),
-                    CatUi("3", listOf())
+            try {
+                val result = catsApi.cats()
+                if (!result.isSuccessful) {
+                    _uiState.value = HomeUiState.Error("Request failed with status code ${result.code()}")
+                }
+                val body = result.body()
+                if (body == null) {
+                    _uiState.value = HomeUiState.Error("A null response was received")
+                    return@launch
+                }
+
+                _uiState.value = HomeUiState.Success(
+                    catList = body.map {
+                        CatUi(id = it.id, tags = it.tags)
+                    }
                 )
-            )
+            } catch (ex: Exception) {
+                _uiState.value = HomeUiState.Error("Error: ${ex.message}")
+            }
         }
     }
 }
