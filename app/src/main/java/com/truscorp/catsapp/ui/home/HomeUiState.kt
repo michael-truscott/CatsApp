@@ -7,3 +7,7 @@ sealed interface HomeUiState {
     data class Error(val message: String) : HomeUiState
     data class Success(val catList: List<CatUi>) : HomeUiState
 }
+
+sealed interface HomeUiAction {
+    object Refresh : HomeUiAction
+}

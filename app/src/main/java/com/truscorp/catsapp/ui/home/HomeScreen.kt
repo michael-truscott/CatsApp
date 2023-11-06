@@ -14,9 +14,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -40,17 +44,27 @@ fun HomeScreen(
     navController: NavController
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    HomeScreenStateless(modifier, uiState = uiState)
+    HomeScreenStateless(modifier, uiState = uiState, onAction = { action ->
+        viewModel.performAction(action)
+    })
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreenStateless(
     modifier: Modifier = Modifier,
-    uiState: HomeUiState
+    uiState: HomeUiState,
+    onAction: (HomeUiAction) -> Unit
 ) {
     Column(modifier = modifier.fillMaxSize()) {
-        TopAppBar(title = { Text(text = "Home") })
+        TopAppBar(title = { Text(text = "Home") }, actions = {
+            IconButton(
+                onClick = { onAction(HomeUiAction.Refresh) },
+                enabled = uiState != HomeUiState.Loading
+            ) {
+                Icon(imageVector = Icons.Default.Refresh, contentDescription = "Refresh")
+            }
+        })
         when (uiState) {
             is HomeUiState.Loading -> {
                 Box(modifier = Modifier.fillMaxSize()) {
@@ -100,10 +114,12 @@ fun CatListItem(
     cat: CatUi
 ) {
     Card(modifier.fillMaxWidth()) {
-        Box(modifier = Modifier
-            .background(Color.Red)
-            .fillMaxWidth()
-            .height(100.dp))
+        Box(
+            modifier = Modifier
+                .background(Color.Red)
+                .fillMaxWidth()
+                .height(100.dp)
+        )
         if (cat.tags.isNotEmpty()) {
             TagList(tags = cat.tags)
         }

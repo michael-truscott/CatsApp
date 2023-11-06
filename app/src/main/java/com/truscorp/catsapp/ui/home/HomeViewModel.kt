@@ -20,7 +20,20 @@ class HomeViewModel @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     init {
+        refresh()
+    }
+
+    fun performAction(action: HomeUiAction) {
+        when (action) {
+            is HomeUiAction.Refresh -> {
+                refresh()
+            }
+        }
+    }
+
+    private fun refresh() {
         viewModelScope.launch {
+            _uiState.value = HomeUiState.Loading
             delay(2000)
             try {
                 val result = catsApi.cats()
