@@ -36,9 +36,10 @@ class HomeViewModel @Inject constructor(
             _uiState.value = HomeUiState.Loading
             delay(2000)
             try {
-                val result = catsApi.cats()
+                val result = catsApi.getAllCats()
                 if (!result.isSuccessful) {
                     _uiState.value = HomeUiState.Error("Request failed with status code ${result.code()}")
+                    return@launch
                 }
                 val body = result.body()
                 if (body == null) {

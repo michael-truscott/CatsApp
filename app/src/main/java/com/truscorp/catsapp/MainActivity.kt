@@ -30,6 +30,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
+import com.truscorp.catsapp.ui.details.DetailScreen
+import com.truscorp.catsapp.ui.details.DetailViewModel
 import com.truscorp.catsapp.ui.home.HomeScreen
 import com.truscorp.catsapp.ui.home.HomeViewModel
 import com.truscorp.catsapp.ui.tags.TagsScreen
@@ -129,7 +131,8 @@ fun AppNavHost(
                     }
                 )
             ) {
-                Text(text = "Details")
+                val viewModel: DetailViewModel = hiltViewModel()
+                DetailScreen(viewModel = viewModel)
             }
         }
 

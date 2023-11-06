@@ -23,6 +23,7 @@ class TagsViewModel @Inject constructor(
                 val result = catsApi.tags()
                 if (!result.isSuccessful) {
                     _uiState.value = TagsUiState.Error("Request failed with status code ${result.code()}")
+                    return@launch
                 }
                 val body = result.body()
                 if (body == null) {
