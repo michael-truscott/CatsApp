@@ -38,6 +38,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.SubcomposeAsyncImage
 import com.truscorp.catsapp.ui.common.CatUi
+import com.truscorp.catsapp.ui.common.ErrorContent
+import com.truscorp.catsapp.ui.common.LoadingContent
 
 @Composable
 fun HomeScreen(
@@ -69,18 +71,11 @@ fun HomeScreenStateless(
         })
         when (uiState) {
             is HomeUiState.Loading -> {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    CircularProgressIndicator(Modifier.align(Alignment.Center))
-                }
+                LoadingContent()
             }
 
             is HomeUiState.Error -> {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    Text(
-                        text = uiState.message, color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                }
+                ErrorContent(message = uiState.message)
             }
 
             is HomeUiState.Success -> {
@@ -94,7 +89,7 @@ fun HomeScreenStateless(
 }
 
 @Composable
-fun CatList(
+private fun CatList(
     modifier: Modifier = Modifier,
     cats: List<CatUi>
 ) {
@@ -111,7 +106,7 @@ fun CatList(
 }
 
 @Composable
-fun CatListItem(
+private fun CatListItem(
     modifier: Modifier = Modifier,
     cat: CatUi
 ) {
@@ -135,14 +130,14 @@ fun CatListItem(
             )
         }
         if (cat.tags.isNotEmpty()) {
-            TagList(tags = cat.tags)
+            CatTagList(tags = cat.tags)
         }
     }
 }
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun TagList(
+private fun CatTagList(
     modifier: Modifier = Modifier,
     tags: List<String>
 ) {
@@ -163,7 +158,7 @@ fun TagList(
 }
 
 @Composable
-fun TagListItem(
+private fun TagListItem(
     tag: String
 ) {
     Box(Modifier.clip(RoundedCornerShape(percent = 50))) {
@@ -171,7 +166,7 @@ fun TagListItem(
             Text(
                 modifier = Modifier
                     .padding(horizontal = 8.dp, vertical = 4.dp)
-                    .align(Alignment.Center), text = "#$tag"
+                    .align(Alignment.Center), text = if (tag.startsWith('#')) tag else "#$tag"
             )
         }
     }

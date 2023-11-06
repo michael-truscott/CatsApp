@@ -28,6 +28,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.truscorp.catsapp.ui.home.HomeScreen
 import com.truscorp.catsapp.ui.home.HomeViewModel
+import com.truscorp.catsapp.ui.tags.TagsScreen
+import com.truscorp.catsapp.ui.tags.TagsViewModel
 import com.truscorp.catsapp.ui.theme.CatsAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -114,7 +116,8 @@ fun AppNavHost(
             HomeScreen(viewModel = viewModel, navController = navController)
         }
         composable(Screen.Tags.route) {
-            Text(text = "Tags")
+            val viewModel: TagsViewModel = hiltViewModel()
+            TagsScreen(viewModel = viewModel, navController = navController)
         }
         composable(Screen.Favourites.route) {
             Text(text = "Favourites")

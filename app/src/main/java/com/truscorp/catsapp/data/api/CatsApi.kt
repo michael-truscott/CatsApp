@@ -14,4 +14,7 @@ interface CatsApi {
         @Query("skip") skip: Int = 0,
         @Query("limit") limit: Int = 10
     ): Response<List<CatModel>>
+
+    @GET("api/tags")
+    suspend fun tags(): Response<List<String>>
 }
