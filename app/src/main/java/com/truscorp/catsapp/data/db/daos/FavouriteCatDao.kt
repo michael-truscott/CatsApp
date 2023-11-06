@@ -17,8 +17,8 @@ interface FavouriteCatDao {
     suspend fun getAll(): List<FavouriteCat>
 
     @Insert
-    fun add(vararg favouriteCats: FavouriteCat)
+    suspend fun add(vararg favouriteCats: FavouriteCat)
 
     @Delete
-    fun delete(vararg favouriteCats: FavouriteCat)
+    suspend fun delete(vararg favouriteCats: FavouriteCat)
 }

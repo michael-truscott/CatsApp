@@ -9,7 +9,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,13 +36,16 @@ fun DetailScreen(
     viewModel: DetailViewModel
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    DetailScreenStateless(modifier = modifier, uiState = uiState)
+    DetailScreenStateless(modifier = modifier, uiState = uiState,
+        onAction = { viewModel.performAction(it) }
+    )
 }
 
 @Composable
 fun DetailScreenStateless(
     modifier: Modifier = Modifier,
-    uiState: DetailUiState
+    uiState: DetailUiState,
+    onAction: (DetailUiAction) -> Unit
 ) {
     Column(modifier = modifier.fillMaxSize()) {
         when (uiState) {
@@ -50,7 +58,7 @@ fun DetailScreenStateless(
             }
 
             is DetailUiState.Success -> {
-                DetailScreenContent(cat = uiState.cat)
+                DetailScreenContent(cat = uiState.cat, onAction = onAction)
             }
         }
     }
@@ -59,7 +67,8 @@ fun DetailScreenStateless(
 @Composable
 private fun DetailScreenContent(
     modifier: Modifier = Modifier,
-    cat: CatUi
+    cat: CatUi,
+    onAction: (DetailUiAction) -> Unit
 ) {
     Column(modifier.fillMaxSize()) {
         Box(modifier = Modifier.background(Color.Black)) {
@@ -76,8 +85,29 @@ private fun DetailScreenContent(
                     }
                 }
             )
+            FavouriteButton(
+                modifier = Modifier.align(Alignment.TopEnd),
+                selected = cat.isFavourite
+            ) {
+                onAction(DetailUiAction.SetFavourite(!cat.isFavourite))
+            }
         }
         DetailScreenTagList(tags = cat.tags)
+    }
+}
+
+@Composable
+fun FavouriteButton(
+    modifier: Modifier = Modifier,
+    selected: Boolean,
+    onClick: () -> Unit
+) {
+    IconButton(modifier = modifier, onClick = onClick) {
+        if (selected) {
+            Icon(imageVector = Icons.Default.Favorite, contentDescription = "Unfavourite", tint = Color.Red)
+        } else {
+            Icon(imageVector = Icons.Default.FavoriteBorder, contentDescription = "Favourite", tint = Color.White)
+        }
     }
 }
 
