@@ -1,4 +1,4 @@
-package com.truscorp.catsapp.ui.data.api
+package com.truscorp.catsapp.data.api
 
 import com.google.gson.annotations.SerializedName
 

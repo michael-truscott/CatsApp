@@ -3,7 +3,7 @@ package com.truscorp.catsapp.ui.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.truscorp.catsapp.ui.common.CatUi
-import com.truscorp.catsapp.ui.data.api.CatsApi
+import com.truscorp.catsapp.data.api.CatsApi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow

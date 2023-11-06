@@ -1,4 +1,4 @@
-package com.truscorp.catsapp.ui.data.api
+package com.truscorp.catsapp.data.api
 
 import retrofit2.Response
 import retrofit2.http.GET

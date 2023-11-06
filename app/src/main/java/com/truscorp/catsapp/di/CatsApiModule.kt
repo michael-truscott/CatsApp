@@ -1,6 +1,6 @@
 package com.truscorp.catsapp.di
 
-import com.truscorp.catsapp.ui.data.api.CatsApi
+import com.truscorp.catsapp.data.api.CatsApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
