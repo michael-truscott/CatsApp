@@ -36,6 +36,7 @@ fun TagsScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     TagsScreenStateless(
+        modifier = modifier,
         uiState = uiState,
         onTagClicked = { tag -> navController.navigate("tag_results/$tag") }
     )

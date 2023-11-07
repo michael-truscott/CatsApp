@@ -12,9 +12,9 @@ class CatRepositoryImpl @Inject constructor(
     private val catsApi: CatsApi,
     private val catsAppDatabase: CatsAppDatabase
 ) : CatRepository {
-    override suspend fun getAll(): Flow<List<Cat>> {
+    override suspend fun getAll(tags: List<String>): Flow<List<Cat>> {
         val apiGetCatsFlow = flow {
-            emit(catsApi.getAllCats())
+            emit(catsApi.getAllCats(tags.joinToString(",")))
         }
         return combine(apiGetCatsFlow, catsAppDatabase.favouriteCatDao().getAllFlow()) { apiResponse, favourites ->
             val body = apiResponse.body()
