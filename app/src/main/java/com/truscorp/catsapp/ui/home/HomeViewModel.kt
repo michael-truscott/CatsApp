@@ -2,7 +2,7 @@ package com.truscorp.catsapp.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.truscorp.catsapp.data.repositories.CatRepository
+import com.truscorp.catsapp.data.repositories.cat.CatRepository
 import com.truscorp.catsapp.ui.common.toCatUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -29,7 +29,7 @@ class HomeViewModel @Inject constructor(
     fun performAction(action: HomeUiAction) {
         when (action) {
             is HomeUiAction.Refresh -> refresh()
-            is HomeUiAction.SetFavourite -> setFavourite(action.id, action.favourite)
+            is HomeUiAction.SetFavourite -> setFavourite(action.id, !action.favourite)
         }
     }
 
