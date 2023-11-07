@@ -23,9 +23,11 @@ fun TagResultsScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     TagResultsScreenStateless(
-        uiState = uiState, tag = viewModel.tag,
+        modifier = modifier,
+        uiState = uiState,
+        tag = viewModel.tag,
         onFavouriteClicked = { cat -> viewModel.setFavourite(cat.id, !cat.isFavourite) },
-        onCatClicked = { cat -> } // TODO:
+        onCatClicked = { cat -> navController.navigate("tag_details/${cat.id}") }
     )
 }
 

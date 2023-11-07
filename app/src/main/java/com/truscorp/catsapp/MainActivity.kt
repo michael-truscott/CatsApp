@@ -64,6 +64,7 @@ sealed class Screen(val route: String) {
     object HomeDetails : Screen("home_details/{id}")
     object Tags : Screen("tags")
     object TagResults : Screen("tag_results/{tag}")
+    object TagDetails : Screen("tag_details/{id}")
     object Favourites : Screen("favourites")
 
 }
@@ -154,6 +155,17 @@ fun AppNavHost(
             ) {
                 val viewModel: TagResultsViewModel = hiltViewModel()
                 TagResultsScreen(viewModel = viewModel, navController = navController)
+            }
+            composable(
+                Screen.TagDetails.route,
+                arguments = listOf(
+                    navArgument("id") {
+                        type = NavType.StringType
+                    }
+                )
+            ) {
+                val viewModel: DetailViewModel = hiltViewModel()
+                DetailScreen(viewModel = viewModel)
             }
         }
 
