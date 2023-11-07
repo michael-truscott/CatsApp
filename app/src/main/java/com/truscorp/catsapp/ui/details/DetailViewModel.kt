@@ -3,8 +3,6 @@ package com.truscorp.catsapp.ui.details
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.truscorp.catsapp.data.db.CatsAppDatabase
-import com.truscorp.catsapp.data.db.models.FavouriteCat
 import com.truscorp.catsapp.data.repositories.CatRepository
 import com.truscorp.catsapp.ui.common.toCatUi
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,8 +14,7 @@ import javax.inject.Inject
 @HiltViewModel
 class DetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val catRepository: CatRepository,
-    private val catsAppDatabase: CatsAppDatabase
+    private val catRepository: CatRepository
 ) : ViewModel() {
 
     private val id = requireNotNull(savedStateHandle.get<String>("id"))
@@ -47,13 +44,9 @@ class DetailViewModel @Inject constructor(
         }
     }
 
-    fun setFavourite(favourite: Boolean) {
+    private fun setFavourite(favourite: Boolean) {
         viewModelScope.launch {
-            if (favourite) {
-                catsAppDatabase.favouriteCatDao().add(FavouriteCat(id))
-            } else {
-                catsAppDatabase.favouriteCatDao().delete(FavouriteCat(id))
-            }
+            catRepository.setFavourite(id, favourite)
         }
     }
 }
