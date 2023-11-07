@@ -13,7 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
 import com.truscorp.catsapp.ui.common.CatList
 import com.truscorp.catsapp.ui.common.CatUi
 import com.truscorp.catsapp.ui.common.ErrorContent
@@ -23,7 +22,9 @@ import com.truscorp.catsapp.ui.common.LoadingContent
 fun TagResultsScreen(
     modifier: Modifier = Modifier,
     viewModel: TagResultsViewModel,
-    navController: NavController
+    onCatClicked: (CatUi) -> Unit,
+    onBackClicked: () -> Unit,
+    onTagClicked: (String) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
     TagResultsScreenStateless(
@@ -31,9 +32,9 @@ fun TagResultsScreen(
         uiState = uiState,
         tag = viewModel.tag,
         onFavouriteClicked = { cat -> viewModel.setFavourite(cat.id, !cat.isFavourite) },
-        onCatClicked = { cat -> navController.navigate("tag_details/${cat.id}") },
-        onBackClicked = { navController.navigateUp() },
-        onTagClicked = { tag -> navController.navigate("tag_results/$tag") }
+        onCatClicked = onCatClicked,
+        onBackClicked = onBackClicked,
+        onTagClicked = onTagClicked
     )
 }
 

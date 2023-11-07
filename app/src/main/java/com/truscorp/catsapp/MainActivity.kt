@@ -129,7 +129,13 @@ fun AppNavHost(
         navigation(route = RootScreen.Home.route, startDestination = Screen.Home.route) {
             composable(Screen.Home.route) {
                 val viewModel: HomeViewModel = hiltViewModel()
-                HomeScreen(viewModel = viewModel, navController = navController)
+                HomeScreen(
+                    viewModel = viewModel,
+                    onCatClicked = { cat ->
+                        navController.navigate("home_details/${cat.id}")
+                    },
+                    onTagClicked = { tag -> navController.navigate("home_tag_results/$tag") }
+                )
             }
             composable(
                 Screen.HomeDetails.route,
@@ -140,7 +146,7 @@ fun AppNavHost(
                 )
             ) {
                 val viewModel: DetailViewModel = hiltViewModel()
-                DetailScreen(viewModel = viewModel, navController = navController)
+                DetailScreen(viewModel = viewModel, onBackClicked = { navController.navigateUp() })
             }
             composable(
                 Screen.HomeTagResults.route,
@@ -151,14 +157,21 @@ fun AppNavHost(
                 )
             ) {
                 val viewModel: TagResultsViewModel = hiltViewModel()
-                TagResultsScreen(viewModel = viewModel, navController = navController)
+                TagResultsScreen(
+                    viewModel = viewModel,
+                    onCatClicked = { cat -> navController.navigate("home_tag_details/${cat.id}") },
+                    onBackClicked = { navController.navigateUp() },
+                    onTagClicked = { tag -> navController.navigate("home_tag_results/$tag") }
+                )
             }
         }
 
         navigation(route = RootScreen.Tags.route, startDestination = Screen.Tags.route) {
             composable(Screen.Tags.route) {
                 val viewModel: TagsViewModel = hiltViewModel()
-                TagsScreen(viewModel = viewModel, navController = navController)
+                TagsScreen(
+                    viewModel = viewModel,
+                    onTagClicked = { tag -> navController.navigate("tag_results/$tag") })
             }
             composable(
                 Screen.TagResults.route,
@@ -169,7 +182,12 @@ fun AppNavHost(
                 )
             ) {
                 val viewModel: TagResultsViewModel = hiltViewModel()
-                TagResultsScreen(viewModel = viewModel, navController = navController)
+                TagResultsScreen(
+                    viewModel = viewModel,
+                    onCatClicked = { cat -> navController.navigate("tag_details/${cat.id}") },
+                    onBackClicked = { navController.navigateUp() },
+                    onTagClicked = { tag -> navController.navigate("tag_results/$tag") }
+                )
             }
             composable(
                 Screen.TagDetails.route,
@@ -180,14 +198,19 @@ fun AppNavHost(
                 )
             ) {
                 val viewModel: DetailViewModel = hiltViewModel()
-                DetailScreen(viewModel = viewModel, navController = navController)
+                DetailScreen(viewModel = viewModel, onBackClicked = { navController.navigateUp() })
             }
         }
 
-        navigation(route = RootScreen.Favourites.route, startDestination = Screen.Favourites.route) {
+        navigation(
+            route = RootScreen.Favourites.route,
+            startDestination = Screen.Favourites.route
+        ) {
             composable(Screen.Favourites.route) {
                 val viewModel: FavouritesViewModel = hiltViewModel()
-                FavouritesScreen(viewModel = viewModel, navController = navController)
+                FavouritesScreen(
+                    viewModel = viewModel,
+                    onItemClick = { item -> navController.navigate("favourites_details/${item.id}") })
             }
             composable(
                 Screen.FavouritesDetails.route,
@@ -198,10 +221,9 @@ fun AppNavHost(
                 )
             ) {
                 val viewModel: DetailViewModel = hiltViewModel()
-                DetailScreen(viewModel = viewModel, navController = navController)
+                DetailScreen(viewModel = viewModel, onBackClicked = { navController.navigateUp() })
             }
         }
-
     }
 }
 
@@ -212,7 +234,8 @@ fun CatsAppBottomBar(
     navController: NavHostController,
     currentDestination: NavDestination?
 ) {
-    val selectedItemIndex = items.indexOfFirst { item -> currentDestination?.hierarchy?.any { it.route == item.screen.route } == true }
+    val selectedItemIndex =
+        items.indexOfFirst { item -> currentDestination?.hierarchy?.any { it.route == item.screen.route } == true }
     CatsAppBottomBarStateless(
         modifier,
         items = items,

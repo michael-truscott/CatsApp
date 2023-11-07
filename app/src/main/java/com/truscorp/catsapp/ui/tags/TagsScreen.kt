@@ -24,7 +24,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.truscorp.catsapp.ui.common.ErrorContent
 import com.truscorp.catsapp.ui.common.LoadingContent
 
@@ -32,13 +31,13 @@ import com.truscorp.catsapp.ui.common.LoadingContent
 fun TagsScreen(
     modifier: Modifier = Modifier,
     viewModel: TagsViewModel,
-    navController: NavController
+    onTagClicked: (String) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
     TagsScreenStateless(
         modifier = modifier,
         uiState = uiState,
-        onTagClicked = { tag -> navController.navigate("tag_results/$tag") }
+        onTagClicked = onTagClicked
     )
 }
 

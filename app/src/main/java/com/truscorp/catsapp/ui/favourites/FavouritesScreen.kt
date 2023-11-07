@@ -18,7 +18,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.navigation.NavController
 import coil.compose.SubcomposeAsyncImage
 import com.truscorp.catsapp.data.repositories.favourite.Favourite
 import com.truscorp.catsapp.ui.common.ErrorContent
@@ -28,13 +27,13 @@ import com.truscorp.catsapp.ui.common.LoadingContent
 fun FavouritesScreen(
     modifier: Modifier = Modifier,
     viewModel: FavouritesViewModel,
-    navController: NavController
+    onItemClick: (Favourite) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
     FavouritesScreenStateless(
         modifier = modifier,
         uiState = uiState,
-        onItemClick = { item -> navController.navigate("favourites_details/${item.id}") }
+        onItemClick = onItemClick
     )
 }
 

@@ -14,7 +14,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavController
 import com.truscorp.catsapp.ui.common.CatList
 import com.truscorp.catsapp.ui.common.CatListItem
 import com.truscorp.catsapp.ui.common.CatUi
@@ -25,7 +24,8 @@ import com.truscorp.catsapp.ui.common.LoadingContent
 fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel,
-    navController: NavController
+    onCatClicked: (CatUi) -> Unit,
+    onTagClicked: (String) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
     HomeScreenStateless(modifier,
@@ -33,9 +33,8 @@ fun HomeScreen(
         onAction = { action ->
             viewModel.performAction(action)
         },
-        onNavigate = { route ->
-            navController.navigate(route)
-        }
+        onCatClicked = onCatClicked,
+        onTagClicked = onTagClicked
     )
 }
 
@@ -45,7 +44,8 @@ fun HomeScreenStateless(
     modifier: Modifier = Modifier,
     uiState: HomeUiState,
     onAction: (HomeUiAction) -> Unit,
-    onNavigate: (String) -> Unit
+    onCatClicked: (CatUi) -> Unit,
+    onTagClicked: (String) -> Unit
 ) {
     Column(modifier = modifier.fillMaxSize()) {
         TopAppBar(title = { Text(text = "Home") }, actions = {
@@ -72,10 +72,8 @@ fun HomeScreenStateless(
                     onFavouriteClicked = { cat ->
                         onAction(HomeUiAction.SetFavourite(cat.id, cat.isFavourite))
                     },
-                    onCatClicked = { cat ->
-                        onNavigate("home_details/${cat.id}")
-                    },
-                    onTagClicked = { tag -> onNavigate("home_tag_results/$tag") }
+                    onCatClicked = onCatClicked,
+                    onTagClicked = onTagClicked
                 )
             }
         }

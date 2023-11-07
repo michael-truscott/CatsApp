@@ -24,7 +24,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import coil.compose.SubcomposeAsyncImage
 import com.truscorp.catsapp.ui.common.CatUi
 import com.truscorp.catsapp.ui.common.ErrorContent
@@ -35,12 +34,12 @@ import com.truscorp.catsapp.ui.common.LoadingContent
 fun DetailScreen(
     modifier: Modifier = Modifier,
     viewModel: DetailViewModel,
-    navController: NavController
+    onBackClicked: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
     DetailScreenStateless(modifier = modifier, uiState = uiState,
         onAction = { viewModel.performAction(it) },
-        onBackClicked = { navController.navigateUp() }
+        onBackClicked = onBackClicked
     )
 }
 
