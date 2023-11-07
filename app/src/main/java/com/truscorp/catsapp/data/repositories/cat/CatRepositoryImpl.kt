@@ -1,4 +1,4 @@
-package com.truscorp.catsapp.data.repositories
+package com.truscorp.catsapp.data.repositories.cat
 
 import com.truscorp.catsapp.data.api.CatsApi
 import com.truscorp.catsapp.data.db.CatsAppDatabase

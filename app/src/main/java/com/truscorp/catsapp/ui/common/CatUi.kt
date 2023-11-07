@@ -1,7 +1,6 @@
 package com.truscorp.catsapp.ui.common
 
-import com.truscorp.catsapp.data.api.CatModel
-import com.truscorp.catsapp.data.repositories.Cat
+import com.truscorp.catsapp.data.repositories.cat.Cat
 
 data class CatUi(
     val id: String,
@@ -9,15 +8,6 @@ data class CatUi(
     val tags: List<String> = listOf(),
     val isFavourite: Boolean = false,
 )
-
-fun CatModel.toCatUi(): CatUi {
-    return CatUi(
-        id = id,
-        imageUrl = "https://cataas.com/cat/${id}",
-        tags = tags,
-        isFavourite = false
-    )
-}
 
 fun Cat.toCatUi(): CatUi {
     return CatUi(

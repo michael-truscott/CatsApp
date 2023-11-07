@@ -1,4 +1,4 @@
-package com.truscorp.catsapp.data.repositories
+package com.truscorp.catsapp.data.repositories.cat
 
 import kotlinx.coroutines.flow.Flow
 

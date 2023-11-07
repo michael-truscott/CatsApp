@@ -3,7 +3,7 @@ package com.truscorp.catsapp.ui.details
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.truscorp.catsapp.data.repositories.CatRepository
+import com.truscorp.catsapp.data.repositories.cat.CatRepository
 import com.truscorp.catsapp.ui.common.toCatUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -32,6 +32,8 @@ import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.truscorp.catsapp.ui.details.DetailScreen
 import com.truscorp.catsapp.ui.details.DetailViewModel
+import com.truscorp.catsapp.ui.favourites.FavouritesScreen
+import com.truscorp.catsapp.ui.favourites.FavouritesViewModel
 import com.truscorp.catsapp.ui.home.HomeScreen
 import com.truscorp.catsapp.ui.home.HomeViewModel
 import com.truscorp.catsapp.ui.tag_results.TagResultsScreen
@@ -171,7 +173,8 @@ fun AppNavHost(
 
         navigation(route = RootScreen.Favourites.route, startDestination = Screen.Favourites.route) {
             composable(Screen.Favourites.route) {
-                Text(text = "Favourites")
+                val viewModel: FavouritesViewModel = hiltViewModel()
+                FavouritesScreen(viewModel = viewModel, navController = navController)
             }
         }
 
