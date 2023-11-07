@@ -13,7 +13,7 @@ fun Cat.toCatUi(): CatUi {
     return CatUi(
         id = id,
         imageUrl = imageUrl,
-        tags = tags,
+        tags = tags.filter { it.isNotEmpty() },
         isFavourite = isFavourite
     )
 }
