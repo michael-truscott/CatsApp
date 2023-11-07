@@ -1,5 +1,6 @@
 package com.truscorp.catsapp.ui.favourites
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
@@ -32,7 +33,8 @@ fun FavouritesScreen(
     val uiState by viewModel.uiState.collectAsState()
     FavouritesScreenStateless(
         modifier = modifier,
-        uiState = uiState
+        uiState = uiState,
+        onItemClick = { item -> navController.navigate("favourites_details/${item.id}") }
     )
 }
 
@@ -40,7 +42,8 @@ fun FavouritesScreen(
 @Composable
 fun FavouritesScreenStateless(
     modifier: Modifier = Modifier,
-    uiState: FavouritesUiState
+    uiState: FavouritesUiState,
+    onItemClick: (Favourite) -> Unit
 ) {
     Column(modifier.fillMaxSize()) {
         TopAppBar(title = { Text(text = "Favourites") })
@@ -55,8 +58,7 @@ fun FavouritesScreenStateless(
             }
 
             is FavouritesUiState.Success -> {
-                // TODO:
-                FavouritesScreenContent(favourites = uiState.favourites)
+                FavouritesScreenContent(favourites = uiState.favourites, onItemClick = onItemClick)
             }
         }
     }
@@ -65,12 +67,13 @@ fun FavouritesScreenStateless(
 @Composable
 fun FavouritesScreenContent(
     modifier: Modifier = Modifier,
-    favourites: List<Favourite>
+    favourites: List<Favourite>,
+    onItemClick: (Favourite) -> Unit
 ) {
-    LazyVerticalGrid(columns = GridCells.Fixed(2)) {
+    LazyVerticalGrid(modifier = modifier, columns = GridCells.Fixed(2)) {
         items(favourites, key = { it.id }) { item ->
             FavouritesGridItem(Modifier.aspectRatio(1f), favourite = item) {
-
+                onItemClick(item)
             }
         }
     }
@@ -82,7 +85,7 @@ fun FavouritesGridItem(
     favourite: Favourite,
     onClick: () -> Unit
 ) {
-    Box(modifier = modifier) {
+    Box(modifier = modifier.clickable(onClick = onClick)) {
         SubcomposeAsyncImage(
             modifier = Modifier.fillMaxSize(),
             model = favourite.imageUrl,
