@@ -8,6 +8,8 @@ import com.truscorp.catsapp.ui.common.toCatUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -26,15 +28,19 @@ class DetailViewModel @Inject constructor(
         _uiState.value = DetailUiState.Loading
 
         viewModelScope.launch {
-            catRepository.getById(id).collect {
-                if (it == null) {
-                    _uiState.value = DetailUiState.Error("Error: Cat not found")
-                } else {
-                    _uiState.value = DetailUiState.Success(
-                        cat = it.toCatUi()
-                    )
+            catRepository.getById(id)
+                .catch {ex ->
+                    _uiState.value = DetailUiState.Error("Error: ${ex.message}")
                 }
-            }
+                .collectLatest {
+                    if (it == null) {
+                        _uiState.value = DetailUiState.Error("Error: Cat not found")
+                    } else {
+                        _uiState.value = DetailUiState.Success(
+                            cat = it.toCatUi()
+                        )
+                    }
+                }
         }
     }
 

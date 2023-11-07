@@ -6,6 +6,7 @@ import com.truscorp.catsapp.data.repositories.favourite.FavouriteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,9 +21,13 @@ class FavouritesViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            favouriteRepository.getAll().collectLatest { list ->
-                _uiState.value = FavouritesUiState.Success(list)
-            }
+            favouriteRepository.getAll()
+                .catch {ex ->
+                    _uiState.value = FavouritesUiState.Error("Error: ${ex.message}")
+                }
+                .collectLatest { list ->
+                    _uiState.value = FavouritesUiState.Success(list)
+                }
         }
     }
 }

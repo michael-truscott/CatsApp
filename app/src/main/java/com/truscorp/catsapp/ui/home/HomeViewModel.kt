@@ -9,6 +9,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.cancellable
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -44,9 +46,13 @@ class HomeViewModel @Inject constructor(
 
         _uiState.value = HomeUiState.Loading
         refreshJob = viewModelScope.launch {
-            catRepository.getAll().cancellable().collect { list ->
-                _uiState.value = HomeUiState.Success(list.map { it.toCatUi() })
-            }
+            catRepository.getAll().cancellable()
+                .catch {ex ->
+                    _uiState.value = HomeUiState.Error("Error: ${ex.message}")
+                }
+                .collectLatest { list ->
+                    _uiState.value = HomeUiState.Success(list.map { it.toCatUi() })
+                }
         }
     }
 }

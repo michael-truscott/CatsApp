@@ -11,9 +11,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -37,7 +39,8 @@ fun TagsScreen(
     TagsScreenStateless(
         modifier = modifier,
         uiState = uiState,
-        onTagClicked = onTagClicked
+        onTagClicked = onTagClicked,
+        onRefresh = viewModel::refresh
     )
 }
 
@@ -46,10 +49,21 @@ fun TagsScreen(
 fun TagsScreenStateless(
     modifier: Modifier = Modifier,
     uiState: TagsUiState,
-    onTagClicked: (String) -> Unit
+    onTagClicked: (String) -> Unit,
+    onRefresh: () -> Unit
 ) {
     Column(modifier) {
-        TopAppBar(title = { Text("Tags") })
+        TopAppBar(
+            title = { Text("Tags") },
+            actions = {
+                IconButton(
+                    onClick = onRefresh,
+                    enabled = uiState != TagsUiState.Loading
+                ) {
+                    Icon(imageVector = Icons.Default.Refresh, contentDescription = "Refresh")
+                }
+            }
+        )
         when (uiState) {
             is TagsUiState.Loading -> {
                 LoadingContent()

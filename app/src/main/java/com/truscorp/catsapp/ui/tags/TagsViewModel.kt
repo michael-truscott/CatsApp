@@ -18,6 +18,11 @@ class TagsViewModel @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     init {
+        refresh()
+    }
+
+    fun refresh() {
+        _uiState.value = TagsUiState.Loading
         viewModelScope.launch {
             try {
                 val result = catsApi.tags()
@@ -38,6 +43,5 @@ class TagsViewModel @Inject constructor(
                 _uiState.value = TagsUiState.Error("Error: ${ex.message}")
             }
         }
-
     }
 }

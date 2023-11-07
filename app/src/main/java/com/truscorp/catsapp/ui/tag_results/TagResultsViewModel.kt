@@ -8,6 +8,8 @@ import com.truscorp.catsapp.ui.common.toCatUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -26,11 +28,15 @@ class TagResultsViewModel @Inject constructor(
         _uiState.value = TagResultsUiState.Loading
 
         viewModelScope.launch {
-            catRepository.getAll(listOf(tag)).collect { list ->
-                _uiState.value = TagResultsUiState.Success(
-                    catList = list.map { it.toCatUi() }
-                )
-            }
+            catRepository.getAll(listOf(tag))
+                .catch {ex ->
+                    _uiState.value = TagResultsUiState.Error("Error: ${ex.message}")
+                }
+                .collectLatest { list ->
+                    _uiState.value = TagResultsUiState.Success(
+                        catList = list.map { it.toCatUi() }
+                    )
+                }
         }
     }
 
