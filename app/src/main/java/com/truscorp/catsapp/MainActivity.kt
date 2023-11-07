@@ -70,6 +70,7 @@ sealed class Screen(val route: String) {
     object TagDetails : Screen("tag_details/{id}")
     object Favourites : Screen("favourites")
     object FavouritesDetails : Screen("favourites_details/{id}")
+    object FavouritesTagResults : Screen("favourites_tag_results/{tag}")
 
 }
 
@@ -146,7 +147,11 @@ fun AppNavHost(
                 )
             ) {
                 val viewModel: DetailViewModel = hiltViewModel()
-                DetailScreen(viewModel = viewModel, onBackClicked = { navController.navigateUp() })
+                DetailScreen(
+                    viewModel = viewModel,
+                    onBackClicked = { navController.navigateUp() },
+                    onTagClicked = { tag -> navController.navigate("home_tag_results/$tag") }
+                )
             }
             composable(
                 Screen.HomeTagResults.route,
@@ -198,7 +203,10 @@ fun AppNavHost(
                 )
             ) {
                 val viewModel: DetailViewModel = hiltViewModel()
-                DetailScreen(viewModel = viewModel, onBackClicked = { navController.navigateUp() })
+                DetailScreen(
+                    viewModel = viewModel, onBackClicked = { navController.navigateUp() },
+                    onTagClicked = { tag -> navController.navigate("tag_results/$tag") }
+                )
             }
         }
 
@@ -221,7 +229,27 @@ fun AppNavHost(
                 )
             ) {
                 val viewModel: DetailViewModel = hiltViewModel()
-                DetailScreen(viewModel = viewModel, onBackClicked = { navController.navigateUp() })
+                DetailScreen(
+                    viewModel = viewModel,
+                    onBackClicked = { navController.navigateUp() },
+                    onTagClicked = { tag -> navController.navigate("favourites_tag_results/$tag") }
+                )
+            }
+            composable(
+                Screen.FavouritesTagResults.route,
+                arguments = listOf(
+                    navArgument("tag") {
+                        type = NavType.StringType
+                    }
+                )
+            ) {
+                val viewModel: TagResultsViewModel = hiltViewModel()
+                TagResultsScreen(
+                    viewModel = viewModel,
+                    onCatClicked = { cat -> navController.navigate("favourites_details/${cat.id}") },
+                    onBackClicked = { navController.navigateUp() },
+                    onTagClicked = { tag -> navController.navigate("favourites_tag_results/$tag") }
+                )
             }
         }
     }

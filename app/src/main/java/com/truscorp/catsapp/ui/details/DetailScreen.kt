@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
@@ -25,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
+import com.truscorp.catsapp.ui.common.CatTagList
 import com.truscorp.catsapp.ui.common.CatUi
 import com.truscorp.catsapp.ui.common.ErrorContent
 import com.truscorp.catsapp.ui.common.FavouriteButton
@@ -34,12 +33,15 @@ import com.truscorp.catsapp.ui.common.LoadingContent
 fun DetailScreen(
     modifier: Modifier = Modifier,
     viewModel: DetailViewModel,
-    onBackClicked: () -> Unit
+    onBackClicked: () -> Unit,
+    onTagClicked: (String) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    DetailScreenStateless(modifier = modifier, uiState = uiState,
+    DetailScreenStateless(
+        modifier = modifier, uiState = uiState,
         onAction = { viewModel.performAction(it) },
-        onBackClicked = onBackClicked
+        onBackClicked = onBackClicked,
+        onTagClicked = onTagClicked
     )
 }
 
@@ -48,7 +50,8 @@ fun DetailScreenStateless(
     modifier: Modifier = Modifier,
     uiState: DetailUiState,
     onAction: (DetailUiAction) -> Unit,
-    onBackClicked: () -> Unit
+    onBackClicked: () -> Unit,
+    onTagClicked: (String) -> Unit
 ) {
     Column(modifier = modifier.fillMaxSize()) {
         when (uiState) {
@@ -61,7 +64,12 @@ fun DetailScreenStateless(
             }
 
             is DetailUiState.Success -> {
-                DetailScreenContent(cat = uiState.cat, onAction = onAction, onBackClicked = onBackClicked)
+                DetailScreenContent(
+                    cat = uiState.cat,
+                    onAction = onAction,
+                    onBackClicked = onBackClicked,
+                    onTagClicked = onTagClicked
+                )
             }
         }
     }
@@ -72,7 +80,8 @@ private fun DetailScreenContent(
     modifier: Modifier = Modifier,
     cat: CatUi,
     onAction: (DetailUiAction) -> Unit,
-    onBackClicked: () -> Unit
+    onBackClicked: () -> Unit,
+    onTagClicked: (String) -> Unit
 ) {
     Column(modifier.fillMaxSize()) {
         Box(modifier = Modifier.background(Color.Black)) {
@@ -93,7 +102,11 @@ private fun DetailScreenContent(
                 modifier = Modifier.align(Alignment.TopStart),
                 onClick = onBackClicked
             ) {
-                Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.White)
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "Back",
+                    tint = Color.White
+                )
             }
             FavouriteButton(
                 modifier = Modifier.align(Alignment.TopEnd),
@@ -102,21 +115,22 @@ private fun DetailScreenContent(
                 onAction(DetailUiAction.SetFavourite(!cat.isFavourite))
             }
         }
-        DetailScreenTagList(tags = cat.tags)
+        DetailScreenTagList(tags = cat.tags, onTagClicked = onTagClicked)
     }
 }
 
 @Composable
 fun DetailScreenTagList(
     modifier: Modifier = Modifier,
-    tags: List<String>
+    tags: List<String>,
+    onTagClicked: (String) -> Unit
 ) {
     Column(modifier.padding(8.dp)) {
         Text(text = "Tags", style = MaterialTheme.typography.titleLarge)
-        LazyColumn() {
-            items(tags, key = { it }) { tag ->
-                Text(text = if (tag.startsWith('#')) tag else "#$tag")
-            }
+        if (tags.isEmpty()) {
+            Text(text = "No tags")
+        } else {
+            CatTagList(tags = tags, onTagClicked = onTagClicked)
         }
     }
 }

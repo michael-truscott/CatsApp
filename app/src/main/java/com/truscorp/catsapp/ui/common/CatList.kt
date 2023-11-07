@@ -95,7 +95,7 @@ fun CatListItem(
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun CatTagList(
+fun CatTagList(
     modifier: Modifier = Modifier,
     tags: List<String>,
     onTagClicked: (String) -> Unit
