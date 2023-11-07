@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -13,6 +14,7 @@ import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -35,7 +37,7 @@ fun TagsScreen(
     val uiState by viewModel.uiState.collectAsState()
     TagsScreenStateless(
         uiState = uiState,
-        onTagClicked = { } // TODO
+        onTagClicked = { tag -> navController.navigate("tag_results/$tag") }
     )
 }
 
@@ -79,25 +81,25 @@ private fun TagList(
             Text(text = "${tags.size} tags", modifier = Modifier.padding(8.dp))
         }
         items(tags, key = { it }) { tag ->
-            TagListItem(tag = tag)
+            TagListItem(tag = tag, onClick = { onTagClicked(tag) })
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun TagListItem(
     tag: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
 ) {
-    Card(modifier.fillMaxWidth()) {
+    Card(onClick = onClick) {
         Row(
-            Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp, horizontal = 8.dp),
+            modifier.padding(horizontal = 8.dp).heightIn(min = 50.dp).fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = if (tag.startsWith('#')) tag else "#$tag")
+            Text(modifier = Modifier.padding(vertical = 8.dp), text = if (tag.startsWith('#')) tag else "#$tag", style = MaterialTheme.typography.titleMedium)
             Icon(imageVector = Icons.Default.KeyboardArrowRight, contentDescription = null)
         }
     }

@@ -32,7 +32,7 @@ class TagsViewModel @Inject constructor(
                 }
 
                 _uiState.value = TagsUiState.Success(
-                    tags = body
+                    tags = body.filter { it.isNotBlank() }
                 )
             } catch (ex: Exception) {
                 _uiState.value = TagsUiState.Error("Error: ${ex.message}")

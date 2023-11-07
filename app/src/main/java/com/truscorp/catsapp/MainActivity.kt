@@ -34,6 +34,8 @@ import com.truscorp.catsapp.ui.details.DetailScreen
 import com.truscorp.catsapp.ui.details.DetailViewModel
 import com.truscorp.catsapp.ui.home.HomeScreen
 import com.truscorp.catsapp.ui.home.HomeViewModel
+import com.truscorp.catsapp.ui.tag_results.TagResultsScreen
+import com.truscorp.catsapp.ui.tag_results.TagResultsViewModel
 import com.truscorp.catsapp.ui.tags.TagsScreen
 import com.truscorp.catsapp.ui.tags.TagsViewModel
 import com.truscorp.catsapp.ui.theme.CatsAppTheme
@@ -61,6 +63,7 @@ sealed class Screen(val route: String) {
     object Home : Screen("home")
     object HomeDetails : Screen("home_details/{id}")
     object Tags : Screen("tags")
+    object TagResults : Screen("tag_results/{tag}")
     object Favourites : Screen("favourites")
 
 }
@@ -140,6 +143,17 @@ fun AppNavHost(
             composable(Screen.Tags.route) {
                 val viewModel: TagsViewModel = hiltViewModel()
                 TagsScreen(viewModel = viewModel, navController = navController)
+            }
+            composable(
+                Screen.TagResults.route,
+                arguments = listOf(
+                    navArgument("tag") {
+                        type = NavType.StringType
+                    }
+                )
+            ) {
+                val viewModel: TagResultsViewModel = hiltViewModel()
+                TagResultsScreen(viewModel = viewModel, navController = navController)
             }
         }
 
