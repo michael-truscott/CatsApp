@@ -2,7 +2,11 @@ package com.truscorp.catsapp.ui.tag_results
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -27,7 +31,8 @@ fun TagResultsScreen(
         uiState = uiState,
         tag = viewModel.tag,
         onFavouriteClicked = { cat -> viewModel.setFavourite(cat.id, !cat.isFavourite) },
-        onCatClicked = { cat -> navController.navigate("tag_details/${cat.id}") }
+        onCatClicked = { cat -> navController.navigate("tag_details/${cat.id}") },
+        onBackClicked = { navController.navigateUp() }
     )
 }
 
@@ -38,10 +43,18 @@ fun TagResultsScreenStateless(
     uiState: TagResultsUiState,
     tag: String,
     onFavouriteClicked: (CatUi) -> Unit,
-    onCatClicked: (CatUi) -> Unit
+    onCatClicked: (CatUi) -> Unit,
+    onBackClicked: () -> Unit
 ) {
     Column(modifier = modifier.fillMaxSize()) {
-        TopAppBar(title = { Text("#$tag") })
+        TopAppBar(
+            title = { Text("#$tag") },
+            navigationIcon = {
+                IconButton(onClick = onBackClicked) {
+                    Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
+                }
+            }
+        )
         when (uiState) {
             is TagResultsUiState.Loading -> {
                 LoadingContent()

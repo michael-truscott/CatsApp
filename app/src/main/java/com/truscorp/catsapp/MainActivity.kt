@@ -136,7 +136,7 @@ fun AppNavHost(
                 )
             ) {
                 val viewModel: DetailViewModel = hiltViewModel()
-                DetailScreen(viewModel = viewModel)
+                DetailScreen(viewModel = viewModel, navController = navController)
             }
         }
 
@@ -165,7 +165,7 @@ fun AppNavHost(
                 )
             ) {
                 val viewModel: DetailViewModel = hiltViewModel()
-                DetailScreen(viewModel = viewModel)
+                DetailScreen(viewModel = viewModel, navController = navController)
             }
         }
 

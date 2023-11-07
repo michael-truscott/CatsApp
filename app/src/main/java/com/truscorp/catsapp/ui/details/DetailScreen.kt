@@ -9,7 +9,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import coil.compose.SubcomposeAsyncImage
 import com.truscorp.catsapp.ui.common.CatUi
 import com.truscorp.catsapp.ui.common.ErrorContent
@@ -29,11 +34,13 @@ import com.truscorp.catsapp.ui.common.LoadingContent
 @Composable
 fun DetailScreen(
     modifier: Modifier = Modifier,
-    viewModel: DetailViewModel
+    viewModel: DetailViewModel,
+    navController: NavController
 ) {
     val uiState by viewModel.uiState.collectAsState()
     DetailScreenStateless(modifier = modifier, uiState = uiState,
-        onAction = { viewModel.performAction(it) }
+        onAction = { viewModel.performAction(it) },
+        onBackClicked = { navController.navigateUp() }
     )
 }
 
@@ -41,7 +48,8 @@ fun DetailScreen(
 fun DetailScreenStateless(
     modifier: Modifier = Modifier,
     uiState: DetailUiState,
-    onAction: (DetailUiAction) -> Unit
+    onAction: (DetailUiAction) -> Unit,
+    onBackClicked: () -> Unit
 ) {
     Column(modifier = modifier.fillMaxSize()) {
         when (uiState) {
@@ -54,7 +62,7 @@ fun DetailScreenStateless(
             }
 
             is DetailUiState.Success -> {
-                DetailScreenContent(cat = uiState.cat, onAction = onAction)
+                DetailScreenContent(cat = uiState.cat, onAction = onAction, onBackClicked = onBackClicked)
             }
         }
     }
@@ -64,7 +72,8 @@ fun DetailScreenStateless(
 private fun DetailScreenContent(
     modifier: Modifier = Modifier,
     cat: CatUi,
-    onAction: (DetailUiAction) -> Unit
+    onAction: (DetailUiAction) -> Unit,
+    onBackClicked: () -> Unit
 ) {
     Column(modifier.fillMaxSize()) {
         Box(modifier = Modifier.background(Color.Black)) {
@@ -81,6 +90,12 @@ private fun DetailScreenContent(
                     }
                 }
             )
+            IconButton(
+                modifier = Modifier.align(Alignment.TopStart),
+                onClick = onBackClicked
+            ) {
+                Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.White)
+            }
             FavouriteButton(
                 modifier = Modifier.align(Alignment.TopEnd),
                 selected = cat.isFavourite
