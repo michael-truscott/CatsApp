@@ -5,8 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.truscorp.catsapp.data.repositories.CatRepository
 import com.truscorp.catsapp.ui.common.toCatUi
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.cancellable
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -17,6 +19,8 @@ class HomeViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
     val uiState = _uiState.asStateFlow()
+
+    private var refreshJob: Job? = null
 
     init {
         refresh()
@@ -36,10 +40,11 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun refresh() {
-        _uiState.value = HomeUiState.Loading
+        refreshJob?.cancel()
 
-        viewModelScope.launch {
-            catRepository.getAll().collect { list ->
+        _uiState.value = HomeUiState.Loading
+        refreshJob = viewModelScope.launch {
+            catRepository.getAll().cancellable().collect { list ->
                 _uiState.value = HomeUiState.Success(list.map { it.toCatUi() })
             }
         }
