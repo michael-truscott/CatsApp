@@ -39,6 +39,7 @@ import androidx.navigation.NavController
 import coil.compose.SubcomposeAsyncImage
 import com.truscorp.catsapp.ui.common.CatUi
 import com.truscorp.catsapp.ui.common.ErrorContent
+import com.truscorp.catsapp.ui.common.FavouriteButton
 import com.truscorp.catsapp.ui.common.LoadingContent
 
 @Composable
@@ -89,6 +90,7 @@ fun HomeScreenStateless(
                 CatList(
                     Modifier.fillMaxSize(),
                     cats = uiState.catList,
+                    onAction = onAction,
                     onCatClicked = { cat ->
                         onNavigate("home_details/${cat.id}")
                     }
@@ -102,6 +104,7 @@ fun HomeScreenStateless(
 private fun CatList(
     modifier: Modifier = Modifier,
     cats: List<CatUi>,
+    onAction: (HomeUiAction) -> Unit,
     onCatClicked: (CatUi) -> Unit
 ) {
     LazyColumn(
@@ -111,7 +114,7 @@ private fun CatList(
         contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp)
     ) {
         items(cats, key = { it.id }) { cat ->
-            CatListItem(cat = cat, onClick = { onCatClicked(cat) })
+            CatListItem(cat = cat, onClick = { onCatClicked(cat) }, onAction = onAction)
         }
     }
 }
@@ -121,7 +124,8 @@ private fun CatList(
 private fun CatListItem(
     modifier: Modifier = Modifier,
     cat: CatUi,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onAction: (HomeUiAction) -> Unit
 ) {
     Card(modifier = modifier.fillMaxWidth(), onClick = onClick) {
         Box(
@@ -141,6 +145,12 @@ private fun CatListItem(
                     }
                 }
             )
+            FavouriteButton(
+                modifier = Modifier.align(Alignment.TopEnd),
+                selected = cat.isFavourite
+            ) {
+                onAction(HomeUiAction.SetFavourite(cat.id, !cat.isFavourite))
+            }
         }
         if (cat.tags.isNotEmpty()) {
             CatTagList(tags = cat.tags)
@@ -203,6 +213,7 @@ fun CatListItemPreview() {
                 "tags"
             ),
         ),
-        onClick = {}
+        onClick = {},
+        onAction = {}
     )
 }

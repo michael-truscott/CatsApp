@@ -9,12 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import com.truscorp.catsapp.ui.common.CatUi
 import com.truscorp.catsapp.ui.common.ErrorContent
+import com.truscorp.catsapp.ui.common.FavouriteButton
 import com.truscorp.catsapp.ui.common.LoadingContent
 
 @Composable
@@ -93,21 +89,6 @@ private fun DetailScreenContent(
             }
         }
         DetailScreenTagList(tags = cat.tags)
-    }
-}
-
-@Composable
-fun FavouriteButton(
-    modifier: Modifier = Modifier,
-    selected: Boolean,
-    onClick: () -> Unit
-) {
-    IconButton(modifier = modifier, onClick = onClick) {
-        if (selected) {
-            Icon(imageVector = Icons.Default.Favorite, contentDescription = "Unfavourite", tint = Color.Red)
-        } else {
-            Icon(imageVector = Icons.Default.FavoriteBorder, contentDescription = "Favourite", tint = Color.White)
-        }
     }
 }
 

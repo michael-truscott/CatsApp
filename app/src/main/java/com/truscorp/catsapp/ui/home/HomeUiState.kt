@@ -10,4 +10,5 @@ sealed interface HomeUiState {
 
 sealed interface HomeUiAction {
     object Refresh : HomeUiAction
+    data class SetFavourite(val id: String, val favourite: Boolean) : HomeUiAction
 }
