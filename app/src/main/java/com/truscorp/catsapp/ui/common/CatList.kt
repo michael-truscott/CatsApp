@@ -1,6 +1,7 @@
 package com.truscorp.catsapp.ui.common
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -33,7 +34,8 @@ fun CatList(
     modifier: Modifier = Modifier,
     cats: List<CatUi>,
     onCatClicked: (CatUi) -> Unit,
-    onFavouriteClicked: (CatUi) -> Unit
+    onFavouriteClicked: (CatUi) -> Unit,
+    onTagClicked: (String) -> Unit
 ) {
     LazyColumn(
         modifier = modifier
@@ -42,7 +44,11 @@ fun CatList(
         contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp)
     ) {
         items(cats, key = { it.id }) { cat ->
-            CatListItem(cat = cat, onClick = { onCatClicked(cat) }, onFavouriteClicked = { onFavouriteClicked(cat) })
+            CatListItem(
+                cat = cat, onClick = { onCatClicked(cat) },
+                onFavouriteClicked = { onFavouriteClicked(cat) },
+                onTagClicked = onTagClicked
+            )
         }
     }
 }
@@ -53,7 +59,8 @@ fun CatListItem(
     modifier: Modifier = Modifier,
     cat: CatUi,
     onClick: () -> Unit,
-    onFavouriteClicked: (CatUi) -> Unit
+    onFavouriteClicked: (CatUi) -> Unit,
+    onTagClicked: (String) -> Unit
 ) {
     Card(modifier = modifier.fillMaxWidth(), onClick = onClick) {
         Box(
@@ -81,7 +88,7 @@ fun CatListItem(
             }
         }
         if (cat.tags.isNotEmpty()) {
-            CatTagList(tags = cat.tags)
+            CatTagList(tags = cat.tags, onTagClicked = onTagClicked)
         }
     }
 }
@@ -90,7 +97,8 @@ fun CatListItem(
 @Composable
 private fun CatTagList(
     modifier: Modifier = Modifier,
-    tags: List<String>
+    tags: List<String>,
+    onTagClicked: (String) -> Unit
 ) {
     Box(
         modifier = modifier
@@ -102,7 +110,7 @@ private fun CatTagList(
             verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
             tags.forEach { tag ->
-                TagListItem(tag = tag)
+                TagListItem(tag = tag, onClick = { onTagClicked(tag) })
             }
         }
     }
@@ -110,9 +118,14 @@ private fun CatTagList(
 
 @Composable
 private fun TagListItem(
-    tag: String
+    tag: String,
+    onClick: () -> Unit
 ) {
-    Box(Modifier.clip(RoundedCornerShape(percent = 50))) {
+    Box(
+        Modifier
+            .clip(RoundedCornerShape(percent = 50))
+            .clickable(onClick = onClick)
+    ) {
         Surface(color = MaterialTheme.colorScheme.primary) {
             Text(
                 modifier = Modifier

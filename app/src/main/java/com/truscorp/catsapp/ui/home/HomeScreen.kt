@@ -74,7 +74,8 @@ fun HomeScreenStateless(
                     },
                     onCatClicked = { cat ->
                         onNavigate("home_details/${cat.id}")
-                    }
+                    },
+                    onTagClicked = { tag -> onNavigate("home_tag_results/$tag") }
                 )
             }
         }
@@ -100,6 +101,7 @@ fun CatListItemPreview() {
             ),
         ),
         onClick = {},
-        onFavouriteClicked = {}
+        onFavouriteClicked = {},
+        onTagClicked = {}
     )
 }

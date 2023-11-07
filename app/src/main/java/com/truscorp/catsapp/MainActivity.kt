@@ -64,6 +64,7 @@ sealed class RootScreen(val route: String) {
 sealed class Screen(val route: String) {
     object Home : Screen("home")
     object HomeDetails : Screen("home_details/{id}")
+    object HomeTagResults : Screen("home_tag_results/{tag}")
     object Tags : Screen("tags")
     object TagResults : Screen("tag_results/{tag}")
     object TagDetails : Screen("tag_details/{id}")
@@ -140,6 +141,17 @@ fun AppNavHost(
             ) {
                 val viewModel: DetailViewModel = hiltViewModel()
                 DetailScreen(viewModel = viewModel, navController = navController)
+            }
+            composable(
+                Screen.HomeTagResults.route,
+                arguments = listOf(
+                    navArgument("tag") {
+                        type = NavType.StringType
+                    }
+                )
+            ) {
+                val viewModel: TagResultsViewModel = hiltViewModel()
+                TagResultsScreen(viewModel = viewModel, navController = navController)
             }
         }
 

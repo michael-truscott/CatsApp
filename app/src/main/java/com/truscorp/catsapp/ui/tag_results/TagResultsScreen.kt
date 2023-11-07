@@ -32,7 +32,8 @@ fun TagResultsScreen(
         tag = viewModel.tag,
         onFavouriteClicked = { cat -> viewModel.setFavourite(cat.id, !cat.isFavourite) },
         onCatClicked = { cat -> navController.navigate("tag_details/${cat.id}") },
-        onBackClicked = { navController.navigateUp() }
+        onBackClicked = { navController.navigateUp() },
+        onTagClicked = { tag -> navController.navigate("tag_results/$tag") }
     )
 }
 
@@ -44,6 +45,7 @@ fun TagResultsScreenStateless(
     tag: String,
     onFavouriteClicked: (CatUi) -> Unit,
     onCatClicked: (CatUi) -> Unit,
+    onTagClicked: (String) -> Unit,
     onBackClicked: () -> Unit
 ) {
     Column(modifier = modifier.fillMaxSize()) {
@@ -69,7 +71,8 @@ fun TagResultsScreenStateless(
                     Modifier.fillMaxSize(),
                     cats = uiState.catList,
                     onFavouriteClicked = onFavouriteClicked,
-                    onCatClicked = onCatClicked
+                    onCatClicked = onCatClicked,
+                    onTagClicked = onTagClicked
                 )
             }
         }
