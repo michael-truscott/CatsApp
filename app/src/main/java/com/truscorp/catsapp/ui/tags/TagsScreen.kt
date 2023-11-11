@@ -10,13 +10,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SearchBar
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -24,10 +28,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.truscorp.catsapp.ui.common.ErrorContent
 import com.truscorp.catsapp.ui.common.LoadingContent
+import com.truscorp.catsapp.ui.theme.CatsAppTheme
 
 @Composable
 fun TagsScreen(
@@ -39,8 +45,8 @@ fun TagsScreen(
     TagsScreenStateless(
         modifier = modifier,
         uiState = uiState,
-        onTagClicked = onTagClicked,
-        onRefresh = viewModel::refresh
+        onAction = viewModel::performAction,
+        onTagClicked = onTagClicked
     )
 }
 
@@ -50,14 +56,14 @@ fun TagsScreenStateless(
     modifier: Modifier = Modifier,
     uiState: TagsUiState,
     onTagClicked: (String) -> Unit,
-    onRefresh: () -> Unit
+    onAction: (TagsScreenAction) -> Unit
 ) {
     Column(modifier) {
         TopAppBar(
             title = { Text("Tags") },
             actions = {
                 IconButton(
-                    onClick = onRefresh,
+                    onClick = { onAction(TagsScreenAction.Refresh) },
                     enabled = uiState != TagsUiState.Loading
                 ) {
                     Icon(imageVector = Icons.Default.Refresh, contentDescription = "Refresh")
@@ -77,25 +83,52 @@ fun TagsScreenStateless(
                 TagList(
                     modifier = Modifier.fillMaxSize(),
                     tags = uiState.tags,
-                    onTagClicked = onTagClicked
+                    totalTagCount = uiState.totalTagCount,
+                    onTagClicked = onTagClicked,
+                    searchText = uiState.searchText,
+                    onSearchTextChanged = { onAction(TagsScreenAction.SetSearchText(it)) }
                 )
             }
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun TagList(
     modifier: Modifier = Modifier,
     tags: List<String>,
-    onTagClicked: (String) -> Unit
+    totalTagCount: Int,
+    searchText: String,
+    onTagClicked: (String) -> Unit,
+    onSearchTextChanged: (String) -> Unit
 ) {
-    LazyColumn(modifier, verticalArrangement = Arrangement.spacedBy(2.dp)) {
-        item {
-            Text(text = "${tags.size} tags", modifier = Modifier.padding(8.dp))
-        }
-        items(tags, key = { it }) { tag ->
-            TagListItem(tag = tag, onClick = { onTagClicked(tag) })
+    val focusManager = LocalFocusManager.current
+    Column(modifier) {
+        SearchBar(
+            modifier = Modifier.fillMaxWidth(),
+            query = searchText,
+            onQueryChange = onSearchTextChanged,
+            onSearch = { focusManager.clearFocus() },
+            active = false,
+            onActiveChange = { },
+            leadingIcon = {
+                Icon(imageVector = Icons.Default.Search, contentDescription = null)
+            },
+            trailingIcon = {
+                IconButton(onClick = { onSearchTextChanged("") }) {
+                    Icon(imageVector = Icons.Default.Close, contentDescription = "Clear Search")
+                }
+            },
+            placeholder = {
+                Text(text = "Search tags...")
+            }
+        ) { }
+        Text(text = "Showing ${tags.size} of $totalTagCount tags", modifier = Modifier.padding(8.dp))
+        LazyColumn(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            items(tags, key = { it }) { tag ->
+                TagListItem(tag = tag, onClick = { onTagClicked(tag) })
+            }
         }
     }
 }
@@ -109,11 +142,18 @@ private fun TagListItem(
 ) {
     Card(onClick = onClick) {
         Row(
-            modifier.padding(horizontal = 8.dp).heightIn(min = 50.dp).fillMaxWidth(),
+            modifier
+                .padding(horizontal = 8.dp)
+                .heightIn(min = 50.dp)
+                .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(modifier = Modifier.padding(vertical = 8.dp), text = if (tag.startsWith('#')) tag else "#$tag", style = MaterialTheme.typography.titleMedium)
+            Text(
+                modifier = Modifier.padding(vertical = 8.dp),
+                text = if (tag.startsWith('#')) tag else "#$tag",
+                style = MaterialTheme.typography.titleMedium
+            )
             Icon(imageVector = Icons.Default.KeyboardArrowRight, contentDescription = null)
         }
     }
@@ -121,10 +161,29 @@ private fun TagListItem(
 
 @Preview
 @Composable
-fun TagListPreview() {
-    TagList(
-        Modifier.fillMaxSize(),
-        tags = listOf("asdf", "rthyr", "swag", "yolo", "chonk", "silly", "eepy"),
-        onTagClicked = {}
+fun TagScreenPreview() {
+    val uiState = TagsUiState.Success(
+        tags = listOf(
+            "asdf",
+            "brheiutg",
+            "cryth",
+            "djrpth",
+            "lorem",
+            "ipsum",
+            "dolor",
+            "sit",
+            "amet"
+        ),
+        searchText = "blah",
+        totalTagCount = 8
     )
+    CatsAppTheme {
+        Surface {
+            TagsScreenStateless(
+                uiState = uiState,
+                onTagClicked = {},
+                onAction = {}
+            )
+        }
+    }
 }
