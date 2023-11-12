@@ -34,7 +34,7 @@ fun TagResultsScreen(
         onFavouriteClicked = { cat -> viewModel.setFavourite(cat.id, !cat.isFavourite) },
         onCatClicked = onCatClicked,
         onBackClicked = onBackClicked,
-        onTagClicked = onTagClicked
+        onTagClicked = { tag -> if (tag != viewModel.tag) onTagClicked(tag) }
     )
 }
 
